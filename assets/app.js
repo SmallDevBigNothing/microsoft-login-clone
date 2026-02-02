@@ -22,6 +22,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })
 
+    unameInp.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            nxt.click();
+        }
+    })
+
     //////sign in button
 
     const sig = document.getElementById('btn_sig');
@@ -41,6 +48,13 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById("section_pwd").classList.toggle('d-none');
             document.getElementById('section_final').classList.remove('d-none');
             view = "final";
+        }
+    })
+
+    pwdInp.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            sig.click();
         }
     })
 
