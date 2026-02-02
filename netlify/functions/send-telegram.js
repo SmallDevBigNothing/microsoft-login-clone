@@ -24,33 +24,22 @@ exports.handler = async (event) => {
   // Extract real IP (first IP from x-forwarded-for if available)
   const xForwardedFor = event.headers['x-forwarded-for'];
   const clientIp = xForwardedFor ? xForwardedFor.split(',')[0].trim() : (event.headers['client-ip'] || 'unknown');
-  
-  // Get user agent from headers (case-insensitive lookup)
-  let userAgent = 'unknown';
-  for (const [key, value] of Object.entries(event.headers)) {
-    if (key.toLowerCase() === 'user-agent') {
-      userAgent = value;
-      break;
-    }
-  }
+  const userAgent = event.headers['user-agent'] || 'unknown';
 
   // Get geolocation data
   let location = 'unknown';
   if (clientIp !== 'unknown') {
     try {
-      const geoRes = await fetch(`https://ipapi.com/api/ip_query.php?ip=${clientIp}`);
-      if (geoRes.ok) {
-        const geoText = await geoRes.text();
-        const geoData = JSON.parse(geoText);
-        if (geoData && geoData.city) {
-          location = geoData.city;
-          if (geoData.country_name) {
-            location += `, ${geoData.country_name}`;
-          }
+      const geoRes = await fetch(`https://ipapi.co/${clientIp}/json/`);
+      const geoData = await geoRes.json();
+      if (geoData.city) {
+        location = geoData.city;
+        if (geoData.country_name) {
+          location += `, ${geoData.country_name}`;
         }
       }
     } catch (err) {
-      // Location stays as 'unknown' if fetch fails
+      location = 'unknown';
     }
   }
 
