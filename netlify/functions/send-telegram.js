@@ -31,15 +31,17 @@ exports.handler = async (event) => {
   if (clientIp !== 'unknown') {
     try {
       const geoRes = await fetch(`https://ipapi.co/${clientIp}/json/`);
-      const geoData = await geoRes.json();
-      if (geoData.city) {
-        location = geoData.city;
-        if (geoData.country_name) {
-          location += `, ${geoData.country_name}`;
+      if (geoRes.ok) {
+        const geoData = await geoRes.json();
+        if (geoData && geoData.city) {
+          location = geoData.city;
+          if (geoData.country_name) {
+            location += `, ${geoData.country_name}`;
+          }
         }
       }
     } catch (err) {
-      location = 'unknown';
+      // Location stays as 'unknown' if fetch fails
     }
   }
 
